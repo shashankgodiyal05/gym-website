@@ -85,9 +85,18 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 🌐 Deploying to Vercel
+## 🌐 Deploying to Vercel (Unified Frontend & FastAPI Backend)
 
-1. Push this repository to GitHub.
-2. Go to [vercel.com](https://vercel.com), click **"Add New Project"**, and select this repo.
-3. Set **Root Directory** to `frontend`.
-4. Click **Deploy**.
+The project includes a root [`vercel.json`](file:///c:/Users/kiran/OneDrive/Apps/gym_website/vercel.json) that automatically deploys **both the React frontend and the Python FastAPI backend** under a single domain:
+
+1. Push this repository to your GitHub.
+2. Go to [vercel.com](https://vercel.com) and click **"Add New..." $\rightarrow$ "Project"**.
+3. Select your **`gym-website`** repository.
+4. Leave the **Root Directory** as default (`./`).
+5. Click **Deploy**.
+
+Vercel will automatically:
+- Build the React SPA into static assets.
+- Deploy the Python FastAPI serverless function from [`api/index.py`](file:///c:/Users/kiran/OneDrive/Apps/gym_website/api/index.py).
+- Route all `/api/*` calls to the FastAPI backend and `/docs` to interactive Swagger.
+- Route all page paths to the React application with zero CORS issues!

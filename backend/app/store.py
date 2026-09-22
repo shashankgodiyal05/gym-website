@@ -13,8 +13,14 @@ from app.data.seed import (
 )
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "../data"))
-STORE_FILE = os.path.join(DATA_DIR, "store.json")
+BUNDLED_STORE = os.path.abspath(os.path.join(CURRENT_DIR, "../data/store.json"))
+
+if os.environ.get("VERCEL"):
+    DATA_DIR = "/tmp/data"
+    STORE_FILE = os.path.join(DATA_DIR, "store.json")
+else:
+    DATA_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "../data"))
+    STORE_FILE = os.path.join(DATA_DIR, "store.json")
 
 class DataStore:
     def __init__(self):
@@ -34,8 +40,9 @@ class DataStore:
             if not os.path.exists(DATA_DIR):
                 os.makedirs(DATA_DIR, exist_ok=True)
 
-            if os.path.exists(STORE_FILE):
-                with open(STORE_FILE, "r", encoding="utf-8") as f:
+            source_file = STORE_FILE if os.path.exists(STORE_FILE) else (BUNDLED_STORE if os.path.exists(BUNDLED_STORE) else None)
+            if source_file and os.path.exists(source_file):
+                with open(source_file, "r", encoding="utf-8") as f:
                     data = json.load(f)
                     if "users" in data and isinstance(data["users"], list):
                         self.users = data["users"]
