@@ -1,15 +1,15 @@
-FROM node:20-alpine
+FROM python:3.13-slim
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install --production
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
 EXPOSE 5000
 
 ENV PORT=5000
-ENV NODE_ENV=production
+ENV PYTHONUNBUFFERED=1
 
-CMD ["npm", "start"]
+CMD ["python", "main.py"]

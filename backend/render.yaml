@@ -1,13 +1,11 @@
 services:
   - type: web
     name: pulsefit-backend
-    env: node
+    env: python
     plan: free
-    buildCommand: npm install
-    startCommand: npm start
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: NODE_ENV
-        value: production
       - key: PORT
         value: 10000
       - key: CORS_ORIGIN

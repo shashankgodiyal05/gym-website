@@ -38,33 +38,50 @@ A modern, high-converting fitness club frontend web application engineered with 
 
 ## 🛠️ Tech Stack
 
+### Frontend
 - **Framework**: [React 18](https://react.dev/) + [Vite](https://vitejs.dev/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) (Custom Dark Athletic Palette `#0A0D14`, `#CCFF00`)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Animations & FX**: [canvas-confetti](https://www.npmjs.com/package/canvas-confetti)
 - **Routing**: [React Router DOM v6](https://reactrouter.com/)
-- **Deployment**: [Vercel](https://vercel.com/) with `vercel.json` SPA rewrite rules
+
+### Backend
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python 3.10+)
+- **Server**: [Uvicorn](https://www.uvicorn.org/) ASGI Server
+- **Data Validation**: [Pydantic v2](https://docs.pydantic.dev/)
+- **API Documentation**: Interactive OpenAPI / Swagger UI at `http://localhost:5000/docs`
+- **Testing**: `pytest` and `httpx` smoke test suite
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Clone & Install
+### 1. Backend (Python + FastAPI)
+```bash
+cd backend
+python -m venv .venv
+# Windows:
+.\.venv\Scripts\activate
+# macOS/Linux:
+# source .venv/bin/activate
+
+pip install -r requirements.txt
+python main.py
+```
+- API Server runs at: [http://localhost:5000](http://localhost:5000)
+- Interactive OpenAPI Docs: [http://localhost:5000/docs](http://localhost:5000/docs)
+- Run tests:
+  ```bash
+  pytest -v
+  ```
+
+### 2. Frontend (React + Vite)
 ```bash
 cd frontend
 npm install
-```
-
-### 2. Run Local Development Server
-```bash
 npm run dev
 ```
 Open [http://localhost:3000](http://localhost:3000) in your browser.
-
-### 3. Production Build
-```bash
-npm run build
-```
 
 ---
 
