@@ -6,7 +6,7 @@ import { useGym } from '../context/GymContext';
 export default function Membership({ onOpenCheckoutModal }) {
   const [billingCycle, setBillingCycle] = useState('annual'); // 'monthly' | 'annual'
   const [openFaq, setOpenFaq] = useState(null);
-  const { activePlan } = useGym();
+  const { activePlan, isLoggedIn } = useGym();
 
   const comparisonRows = [
     { feature: 'Gym Floor & Weight Room Access', starter: 'Standard Hours', pro: '24/7 Unlimited', vip: '24/7 VIP Access' },
@@ -81,7 +81,7 @@ export default function Membership({ onOpenCheckoutModal }) {
           {MEMBERSHIP_PLANS.map((plan) => {
             const isAnnual = billingCycle === 'annual';
             const price = isAnnual ? plan.annualPriceMonthly : plan.monthlyPrice;
-            const isCurrentActive = activePlan === plan.id;
+            const isCurrentActive = isLoggedIn && activePlan === plan.id;
 
             return (
               <div

@@ -73,7 +73,8 @@ export default function App() {
                 path="/membership"
                 element={<Membership onOpenCheckoutModal={handleOpenCheckoutModal} />}
               />
-              <Route path="/register" element={<Register />} />
+              <Route path="/register" element={<Register defaultMode="register" />} />
+              <Route path="/login" element={<Register defaultMode="login" />} />
               <Route
                 path="/my-bookings"
                 element={

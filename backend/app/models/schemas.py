@@ -9,9 +9,11 @@ class UserRegisterRequest(BaseModel):
     goal: Optional[str] = "Muscle Hypertrophy & Strength"
     experience: Optional[str] = "Intermediate (1-3 yrs)"
     preferredTime: Optional[str] = "Morning (06:00 AM - 09:00 AM)"
+    password: Optional[str] = "athlete123"
 
 class UserLoginRequest(BaseModel):
     email: str
+    password: Optional[str] = "athlete123"
     name: Optional[str] = "Fitness Athlete"
 
 class UserProfileUpdateRequest(BaseModel):

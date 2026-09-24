@@ -1,14 +1,30 @@
 import React, { useState } from 'react';
-import { X, ShieldCheck, Check, CreditCard, Smartphone, Building, Lock, Sparkles, AlertCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  X,
+  ShieldCheck,
+  Check,
+  CreditCard,
+  Smartphone,
+  Building,
+  Lock,
+  Sparkles,
+  AlertCircle
+} from 'lucide-react';
 import { useGym } from '../context/GymContext';
 
 export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseSuccess }) {
-  const { user, purchaseMembership } = useGym();
+  const { user, isLoggedIn, purchaseMembership, loginUser, loginDemoUser } = useGym();
 
   const [paymentMethod, setPaymentMethod] = useState('upi');
   const [upiId, setUpiId] = useState('athlete@okhdfcbank');
   const [cardNumber, setCardNumber] = useState('4242 •••• •••• 9821');
   const [processing, setProcessing] = useState(false);
+
+  // Inline sign-in if guest
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authError, setAuthError] = useState(null);
 
   if (!plan) return null;
 
@@ -17,8 +33,27 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
   const gst = Math.round(price * 0.18);
   const total = price + gst;
 
+  const handleInlineLogin = (e) => {
+    e.preventDefault();
+    setAuthError(null);
+    const res = loginUser(authEmail, authPassword);
+    if (!res.success) {
+      setAuthError(res.message);
+    }
+  };
+
+  const handleQuickDemoAuth = () => {
+    setAuthError(null);
+    loginDemoUser();
+  };
+
   const handleCheckout = (e) => {
     e.preventDefault();
+    if (!isLoggedIn || !user) {
+      setAuthError('Please sign in or use 1-click demo to activate this membership pass.');
+      return;
+    }
+
     setProcessing(true);
 
     setTimeout(() => {
@@ -32,7 +67,6 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
       <div className="relative w-full max-w-lg bg-[#121722] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-6">
-        
         {/* Modal Header */}
         <div className="p-6 border-b border-slate-800 bg-gradient-to-r from-[#181F2E] to-[#121722] relative">
           <button
@@ -41,7 +75,7 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
           >
             <X className="w-5 h-5" />
           </button>
-          
+
           <div className="flex items-center gap-2">
             <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#CCFF00]/15 text-[#CCFF00] font-bold uppercase tracking-wider">
               {plan.badge || 'Official Membership'}
@@ -59,7 +93,6 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
 
         {/* Modal Form */}
         <form onSubmit={handleCheckout} className="p-6 space-y-5">
-          
           {/* Investment Summary */}
           <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-4 space-y-2.5">
             <div className="flex justify-between text-xs text-slate-400">
@@ -78,30 +111,92 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
             </div>
           </div>
 
-          {/* Member Confirmation */}
-          <div>
-            <div className="flex items-center justify-between text-xs mb-1.5">
-              <span className="font-semibold uppercase tracking-wider text-slate-300">Member Details</span>
-              <span className="text-[11px] text-emerald-400 flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5" /> Verified Profile
-              </span>
-            </div>
-            <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-lg text-xs space-y-1">
-              <div className="flex justify-between">
-                <span className="text-slate-400">Primary Member:</span>
-                <span className="text-white font-medium">{user.name}</span>
+          {/* Member Confirmation / Guest Sign-In */}
+          {!isLoggedIn || !user ? (
+            <div className="p-4 rounded-xl bg-slate-900 border border-amber-500/40 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5" /> Sign-In To Activate Pass
+                </span>
+                <button
+                  type="button"
+                  onClick={handleQuickDemoAuth}
+                  className="text-[11px] px-2.5 py-1 rounded-lg bg-[#CCFF00] text-black font-extrabold flex items-center gap-1 hover:bg-[#B3E600]"
+                >
+                  <Sparkles className="w-3 h-3" /> 1-Click Demo Sign In
+                </button>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-400">Contact Email:</span>
-                <span className="text-white font-medium">{user.email}</span>
+
+              <p className="text-xs text-slate-300">
+                Please authenticate your athlete profile so your 24/7 keycard and membership tier can be assigned.
+              </p>
+
+              {authError && (
+                <p className="text-xs text-red-400 font-semibold flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{authError}</span>
+                </p>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                <input
+                  type="email"
+                  placeholder="Athlete Email"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#CCFF00]"
+                />
+                <input
+                  type="password"
+                  placeholder="Passcode"
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#CCFF00]"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  type="button"
+                  onClick={handleInlineLogin}
+                  className="text-xs font-bold text-black bg-[#CCFF00] px-4 py-1.5 rounded-lg hover:bg-[#B3E600]"
+                >
+                  Sign In & Link Pass
+                </button>
+                <Link
+                  to="/register?redirect=/membership"
+                  onClick={onClose}
+                  className="text-xs text-slate-400 hover:text-white underline"
+                >
+                  Register New Account →
+                </Link>
               </div>
             </div>
-          </div>
+          ) : (
+            <div>
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="font-semibold uppercase tracking-wider text-slate-300">Member Details</span>
+                <span className="text-[11px] text-emerald-400 flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5" /> Verified Profile
+                </span>
+              </div>
+              <div className="p-3 bg-slate-900/60 border border-slate-800 rounded-lg text-xs space-y-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Primary Member:</span>
+                  <span className="text-white font-medium">{user.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Contact Email:</span>
+                  <span className="text-white font-medium">{user.email}</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Payment Method Selector */}
           <div>
             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-2.5">
-              Choose Payment Method (Demo Simulator)
+              Choose Payment Method (Simulator)
             </label>
             <div className="grid grid-cols-3 gap-2">
               <button
@@ -218,7 +313,7 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
             </button>
             <button
               type="submit"
-              disabled={processing}
+              disabled={processing || !isLoggedIn}
               className="flex-2 py-3 px-6 rounded-xl bg-[#CCFF00] hover:bg-[#B3E600] text-black text-xs font-bold transition flex items-center justify-center gap-2 shadow-glow-lime disabled:opacity-50"
             >
               {processing ? (
@@ -226,6 +321,8 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
                   <span className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></span>
                   <span>Authorizing Payment...</span>
                 </span>
+              ) : !isLoggedIn ? (
+                <span>Sign In Required</span>
               ) : (
                 <>
                   <Sparkles className="w-4 h-4" />
@@ -234,9 +331,7 @@ export default function CheckoutModal({ plan, billingCycle, onClose, onPurchaseS
               )}
             </button>
           </div>
-
         </form>
-
       </div>
     </div>
   );

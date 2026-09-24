@@ -5,7 +5,7 @@ import { TRAINERS_DATA } from '../data/gymData';
 import { useGym } from '../context/GymContext';
 
 export default function SlotBooking({ onOpenBookingModal }) {
-  const { bookings } = useGym();
+  const { user, isLoggedIn, bookings } = useGym();
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -39,18 +39,32 @@ export default function SlotBooking({ onOpenBookingModal }) {
             Reserve dedicated 60-minute training blocks with master certified coaches. Optimize biomechanics, shatter plateaus, and train with undivided professional guidance.
           </p>
 
-          {/* Quick status bar showing active bookings */}
-          {bookings.length > 0 && (
+          {/* Quick status bar showing active bookings or guest prompt */}
+          {isLoggedIn && user ? (
             <div className="inline-flex items-center gap-3 p-2.5 px-4 rounded-xl bg-slate-900 border border-slate-700/80 text-xs">
-              <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               <span className="text-slate-300">
-                You currently have <strong className="text-white">{bookings.length} upcoming</strong> booked session(s).
+                Welcome, <strong className="text-white">{user.name}</strong>! You have{' '}
+                <strong className="text-white">{bookings.length} upcoming</strong> session(s).
               </span>
               <Link
                 to="/my-bookings"
                 className="text-[#CCFF00] font-semibold hover:underline flex items-center gap-1"
               >
                 View Dashboard →
+              </Link>
+            </div>
+          ) : (
+            <div className="inline-flex items-center gap-3 p-2.5 px-4 rounded-xl bg-slate-900/90 border border-slate-800 text-xs">
+              <span className="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span className="text-slate-300">
+                Browsing as Guest. Log in or create an account to reserve your coach slot.
+              </span>
+              <Link
+                to="/login?redirect=/book-slot"
+                className="text-[#CCFF00] font-bold hover:underline"
+              >
+                Sign In Now →
               </Link>
             </div>
           )}

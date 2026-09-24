@@ -1,9 +1,23 @@
 import React, { useState } from 'react';
-import { X, Calendar, Clock, Star, ShieldCheck, CheckCircle2, Dumbbell } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  X,
+  Calendar,
+  Clock,
+  Star,
+  ShieldCheck,
+  CheckCircle2,
+  Dumbbell,
+  Lock,
+  User,
+  Sparkles,
+  ArrowRight,
+  AlertCircle
+} from 'lucide-react';
 import { useGym } from '../context/GymContext';
 
 export default function BookingModal({ trainer, onClose, onBookSuccess }) {
-  const { bookSlot } = useGym();
+  const { user, isLoggedIn, bookSlot, loginUser, loginDemoUser } = useGym();
 
   // Generate next 7 days
   const getDates = () => {
@@ -27,11 +41,35 @@ export default function BookingModal({ trainer, onClose, onBookSuccess }) {
   const [sessionFocus, setSessionFocus] = useState('General Hypertrophy & Technique');
   const [submitting, setSubmitting] = useState(false);
 
+  // Inline auth state if guest
+  const [authEmail, setAuthEmail] = useState('');
+  const [authPassword, setAuthPassword] = useState('');
+  const [authError, setAuthError] = useState(null);
+
   if (!trainer) return null;
+
+  const handleInlineLogin = (e) => {
+    e.preventDefault();
+    setAuthError(null);
+    const res = loginUser(authEmail, authPassword);
+    if (!res.success) {
+      setAuthError(res.message);
+    }
+  };
+
+  const handleQuickDemoAuth = () => {
+    setAuthError(null);
+    loginDemoUser();
+  };
 
   const handleConfirm = (e) => {
     e.preventDefault();
     if (!selectedSlot) return;
+
+    if (!isLoggedIn || !user) {
+      setAuthError('Please sign in or use 1-click demo to confirm this booking.');
+      return;
+    }
 
     setSubmitting(true);
 
@@ -55,7 +93,6 @@ export default function BookingModal({ trainer, onClose, onBookSuccess }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
       <div className="relative w-full max-w-xl bg-[#121722] border border-slate-700/80 rounded-2xl shadow-2xl overflow-hidden my-8">
-        
         {/* Modal Header */}
         <div className="relative p-6 border-b border-slate-800 bg-gradient-to-r from-slate-900 to-[#121722]">
           <button
@@ -64,7 +101,7 @@ export default function BookingModal({ trainer, onClose, onBookSuccess }) {
           >
             <X className="w-5 h-5" />
           </button>
-          
+
           <div className="flex items-center gap-4">
             <img
               src={trainer.avatar}
@@ -89,7 +126,78 @@ export default function BookingModal({ trainer, onClose, onBookSuccess }) {
 
         {/* Modal Body */}
         <form onSubmit={handleConfirm} className="p-6 space-y-6">
-          
+          {/* Guest Sign-In Notice if not logged in */}
+          {!isLoggedIn ? (
+            <div className="p-4 rounded-xl bg-slate-900 border border-amber-500/40 space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold uppercase tracking-wider text-amber-300 flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5" /> Athlete Sign-In Required
+                </span>
+                <button
+                  type="button"
+                  onClick={handleQuickDemoAuth}
+                  className="text-[11px] px-2.5 py-1 rounded-lg bg-[#CCFF00] text-black font-extrabold flex items-center gap-1 hover:bg-[#B3E600]"
+                >
+                  <Sparkles className="w-3 h-3" /> 1-Click Demo Sign In
+                </button>
+              </div>
+              <p className="text-xs text-slate-300">
+                You must be logged in to confirm a personal training slot. Sign in below or register a free account.
+              </p>
+
+              {authError && (
+                <p className="text-xs text-red-400 font-semibold flex items-center gap-1">
+                  <AlertCircle className="w-3.5 h-3.5 shrink-0" />
+                  <span>{authError}</span>
+                </p>
+              )}
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                <input
+                  type="email"
+                  placeholder="Athlete Email"
+                  value={authEmail}
+                  onChange={(e) => setAuthEmail(e.target.value)}
+                  className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#CCFF00]"
+                />
+                <input
+                  type="password"
+                  placeholder="Passcode"
+                  value={authPassword}
+                  onChange={(e) => setAuthPassword(e.target.value)}
+                  className="bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#CCFF00]"
+                />
+              </div>
+
+              <div className="flex items-center justify-between pt-1">
+                <button
+                  type="button"
+                  onClick={handleInlineLogin}
+                  className="text-xs font-bold text-black bg-[#CCFF00] px-4 py-1.5 rounded-lg hover:bg-[#B3E600]"
+                >
+                  Sign In & Proceed
+                </button>
+                <Link
+                  to="/register?redirect=/book-slot"
+                  onClick={onClose}
+                  className="text-xs text-slate-400 hover:text-white underline"
+                >
+                  Register New Account →
+                </Link>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3 bg-slate-900/70 border border-slate-800 rounded-xl flex items-center justify-between text-xs">
+              <span className="text-slate-400">
+                Booking as:{' '}
+                <strong className="text-white">{user.name}</strong> ({user.email})
+              </span>
+              <span className="text-emerald-400 flex items-center gap-1 font-semibold text-[11px]">
+                <ShieldCheck className="w-3.5 h-3.5" /> Verified
+              </span>
+            </div>
+          )}
+
           {/* Step 1: Date Selection */}
           <div>
             <label className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-300 mb-3">
@@ -163,7 +271,9 @@ export default function BookingModal({ trainer, onClose, onBookSuccess }) {
               onChange={(e) => setSessionFocus(e.target.value)}
               className="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#CCFF00]"
             >
-              <option value="Compound Lifting Technique (Squat/Bench/Deadlift)">Compound Lifting Technique (Squat/Bench/Deadlift)</option>
+              <option value="Compound Lifting Technique (Squat/Bench/Deadlift)">
+                Compound Lifting Technique (Squat/Bench/Deadlift)
+              </option>
               <option value="Hypertrophy Volume & Muscle Pump">Hypertrophy Volume & Muscle Pump</option>
               <option value="High Intensity Conditioning & Fat Loss">High Intensity Conditioning & Fat Loss</option>
               <option value="Post-Injury Mobility & Fascial Release">Post-Injury Mobility & Fascial Release</option>
@@ -199,11 +309,13 @@ export default function BookingModal({ trainer, onClose, onBookSuccess }) {
             </button>
             <button
               type="submit"
-              disabled={submitting || !selectedSlot}
+              disabled={submitting || !selectedSlot || !isLoggedIn}
               className="flex-2 py-3 px-6 rounded-xl bg-[#CCFF00] hover:bg-[#B3E600] text-black text-xs font-bold transition flex items-center justify-center gap-2 shadow-glow-lime disabled:opacity-50"
             >
               {submitting ? (
                 <span>Confirming Slot...</span>
+              ) : !isLoggedIn ? (
+                <span>Sign In Required To Book</span>
               ) : (
                 <>
                   <CheckCircle2 className="w-4 h-4" />
@@ -212,9 +324,7 @@ export default function BookingModal({ trainer, onClose, onBookSuccess }) {
               )}
             </button>
           </div>
-
         </form>
-
       </div>
     </div>
   );

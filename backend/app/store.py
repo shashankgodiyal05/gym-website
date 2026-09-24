@@ -96,7 +96,8 @@ class DataStore:
             "experience": user_data.get("experience") or "Intermediate (1-3 yrs)",
             "preferredTime": user_data.get("preferredTime") or "Morning (06:00 AM - 09:00 AM)",
             "membershipTier": user_data.get("membershipTier") or "pro-beast",
-            "memberSince": member_since
+            "memberSince": member_since,
+            "password": user_data.get("password") or "athlete123"
         }
         self.users.append(new_user)
         self.active_user_session = new_user

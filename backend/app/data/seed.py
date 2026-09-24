@@ -9,7 +9,8 @@ INITIAL_USER = {
     "experience": "Intermediate (1-3 yrs)",
     "preferredTime": "Morning (06:00 AM - 09:00 AM)",
     "membershipTier": "pro-beast",
-    "memberSince": "Oct 2024"
+    "memberSince": "Oct 2024",
+    "password": "athlete123"
 }
 
 def get_initial_bookings():
