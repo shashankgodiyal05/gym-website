@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Dumbbell, Calendar, Flame, Zap, Shield, ArrowRight, Star, Trophy, Users, CheckCircle2 } from 'lucide-react';
+import { Dumbbell, Calendar, Flame, Zap, Shield, ArrowRight, Star, Trophy, Users, CheckCircle2, Sparkles, Bot, Apple, Target } from 'lucide-react';
 import { TRAINERS_DATA, MEMBERSHIP_PLANS, FACILITIES, TESTIMONIALS } from '../data/gymData';
 
 export default function Home({ onOpenBookingModal, onOpenCheckoutModal }) {
@@ -10,7 +10,7 @@ export default function Home({ onOpenBookingModal, onOpenCheckoutModal }) {
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center pt-8 overflow-hidden">
         {/* Background gradient & ambient glow */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0D14]/70 via-[#0A0D14]/85 to-[#0A0D14] z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0D14]/70 via-[#0A0D14]/85 to-[#0A0D14] z-10 hero-overlay" />
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-35 scale-105 transition-transform duration-1000"
           style={{
@@ -128,6 +128,76 @@ export default function Home({ onOpenBookingModal, onOpenCheckoutModal }) {
             <p className="text-xs text-slate-400 leading-relaxed">
               Clear, upfront plans without hidden registration fees or lock-in penalties. Switch between monthly and annual plans easily.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* PulseAI Fitness Lab Teaser */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-gradient-to-r from-slate-900 via-[#121722] to-slate-900 border border-slate-800 p-8 sm:p-12 relative overflow-hidden shadow-2xl">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-[#CCFF00]/10 blur-[100px] pointer-events-none rounded-full" />
+          
+          <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+            <div className="space-y-4 max-w-2xl text-center lg:text-left">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#CCFF00]/10 border border-[#CCFF00]/30 text-[#CCFF00] text-xs font-bold uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Next-Gen Athletic Intelligence</span>
+              </div>
+              
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black uppercase text-white font-heading">
+                MEET YOUR <span className="text-gradient-lime">AI FITNESS LAB</span>
+              </h2>
+              
+              <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                Take the guesswork out of bodybuilding and athletic conditioning. Generate algorithmic day-by-day workout splits, compute precision biometric macro targets, and match with the perfect certified master coach.
+              </p>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                <Link
+                  to="/ai-lab?tab=workout"
+                  className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-[#CCFF00]/40 transition text-left group"
+                >
+                  <Dumbbell className="w-4 h-4 text-[#CCFF00] mb-1 group-hover:scale-110 transition-transform" />
+                  <h4 className="text-xs font-bold text-white">Workout Architect</h4>
+                  <p className="text-[11px] text-slate-400">Customized splits & cues</p>
+                </Link>
+
+                <Link
+                  to="/ai-lab?tab=nutrition"
+                  className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-[#CCFF00]/40 transition text-left group"
+                >
+                  <Apple className="w-4 h-4 text-emerald-400 mb-1 group-hover:scale-110 transition-transform" />
+                  <h4 className="text-xs font-bold text-white">Macro Coach</h4>
+                  <p className="text-[11px] text-slate-400">BMR, TDEE & meal plans</p>
+                </Link>
+
+                <Link
+                  to="/ai-lab?tab=matcher"
+                  className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-[#CCFF00]/40 transition text-left group"
+                >
+                  <Target className="w-4 h-4 text-amber-400 mb-1 group-hover:scale-110 transition-transform" />
+                  <h4 className="text-xs font-bold text-white">Coach Matcher</h4>
+                  <p className="text-[11px] text-slate-400">AI trainer compatibility</p>
+                </Link>
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 shrink-0">
+              <Link
+                to="/ai-lab"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[#CCFF00] text-black font-extrabold text-xs uppercase tracking-wider hover:bg-[#B3E600] transition shadow-glow-lime group"
+              >
+                <Sparkles className="w-4 h-4 text-black group-hover:scale-110 transition-transform" />
+                <span>Launch PulseAI Lab</span>
+                <ArrowRight className="w-4 h-4 text-black group-hover:translate-x-1 transition-transform" />
+              </Link>
+
+              <div className="text-center lg:text-left">
+                <span className="text-[11px] text-slate-400">
+                  ✨ 100% Free for All Athletes & Guests
+                </span>
+              </div>
+            </div>
           </div>
         </div>
       </section>

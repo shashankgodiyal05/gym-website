@@ -117,6 +117,33 @@ export default function SlotBooking({ onOpenBookingModal }) {
         </div>
       </section>
 
+      {/* AI Coach Matcher Banner */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-slate-900 via-[#181F2E] to-slate-900 border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-3 text-center sm:text-left">
+            <div className="w-10 h-10 rounded-xl bg-[#CCFF00]/10 border border-[#CCFF00]/30 flex items-center justify-center text-[#CCFF00] shrink-0">
+              <Sparkles className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <h4 className="text-xs sm:text-sm font-bold text-white flex items-center gap-1.5 justify-center sm:justify-start">
+                Unsure which master coach matches your goals?
+              </h4>
+              <p className="text-[11px] text-slate-400">
+                Let our AI Matcher analyze your training style, preferred hours, and biomechanics.
+              </p>
+            </div>
+          </div>
+
+          <Link
+            to="/ai-lab?tab=matcher"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#CCFF00] text-black text-xs font-extrabold uppercase tracking-wider hover:bg-[#B3E600] transition shadow-glow-lime shrink-0"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Launch AI Coach Matcher</span>
+          </Link>
+        </div>
+      </section>
+
       {/* Trainers Grid */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">

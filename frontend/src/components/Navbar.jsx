@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useGym } from '../context/GymContext';
 import { MEMBERSHIP_PLANS } from '../data/gymData';
+import ThemeToggle from './ThemeToggle';
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -33,7 +34,8 @@ export default function Navbar() {
     { name: 'Home', path: '/' },
     { name: 'About Us', path: '/about' },
     { name: 'Book Trainer Slot', path: '/book-slot' },
-    { name: 'Membership Plans', path: '/membership' }
+    { name: 'Membership Plans', path: '/membership' },
+    { name: 'AI Lab ✨', path: '/ai-lab', isAi: true }
   ];
 
   const isActive = (path) => {
@@ -185,6 +187,15 @@ export default function Navbar() {
                         <Crown className="w-4 h-4 text-amber-400" />
                         <span>Membership Pass & Upgrades</span>
                       </Link>
+
+                      <Link
+                        to="/ai-lab"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs text-emerald-400 hover:text-emerald-300 hover:bg-slate-900/80 transition"
+                      >
+                        <Sparkles className="w-4 h-4 text-[#CCFF00]" />
+                        <span>PulseAI Fitness Lab</span>
+                      </Link>
                     </div>
 
                     <div className="pt-1 border-t border-slate-800/80">
@@ -217,6 +228,9 @@ export default function Navbar() {
               </div>
             )}
 
+            {/* Light / Dark Mode Switcher */}
+            <ThemeToggle />
+
             {/* Quick Demo Reset Pill */}
             <button
               onClick={resetDemoData}
@@ -227,8 +241,10 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
+          {/* Mobile Actions & Menu Button */}
           <div className="flex md:hidden items-center gap-2">
+            <ThemeToggle />
+
             <Link
               to="/my-bookings"
               className="relative p-2 rounded-lg bg-slate-900 text-slate-300 border border-slate-800"
@@ -312,6 +328,11 @@ export default function Navbar() {
           })}
 
           <div className="pt-3 border-t border-slate-800 flex flex-col gap-2">
+            <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-slate-900 border border-slate-800">
+              <span className="text-xs font-semibold text-slate-300">Theme Appearance</span>
+              <ThemeToggle showLabel={true} />
+            </div>
+
             <Link
               to="/my-bookings"
               onClick={() => setMobileMenuOpen(false)}

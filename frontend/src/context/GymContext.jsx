@@ -67,7 +67,98 @@ export const GymProvider = ({ children }) => {
     }
   });
 
+  // Theme mode: 'dark' | 'light'
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pulsefit_theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      return 'dark';
+    } catch (e) {
+      return 'dark';
+    }
+  });
+
+  // Saved AI Workout Routine
+  const [savedAiWorkout, setSavedAiWorkout] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pulsefit_saved_ai_workout');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  // Saved AI Macro Plan
+  const [savedAiMacro, setSavedAiMacro] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pulsefit_saved_ai_macro');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
   const [toast, setToast] = useState(null);
+
+  // Sync theme to document root & local storage
+  useEffect(() => {
+    try {
+      const root = document.documentElement;
+      if (theme === 'light') {
+        root.classList.add('light');
+        root.classList.remove('dark');
+      } else {
+        root.classList.add('dark');
+        root.classList.remove('light');
+      }
+      localStorage.setItem('pulsefit_theme', theme);
+    } catch (e) {}
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'dark' ? 'light' : 'dark'));
+  };
+
+  // Sync AI plans
+  useEffect(() => {
+    try {
+      if (savedAiWorkout) {
+        localStorage.setItem('pulsefit_saved_ai_workout', JSON.stringify(savedAiWorkout));
+      } else {
+        localStorage.removeItem('pulsefit_saved_ai_workout');
+      }
+    } catch (e) {}
+  }, [savedAiWorkout]);
+
+  useEffect(() => {
+    try {
+      if (savedAiMacro) {
+        localStorage.setItem('pulsefit_saved_ai_macro', JSON.stringify(savedAiMacro));
+      } else {
+        localStorage.removeItem('pulsefit_saved_ai_macro');
+      }
+    } catch (e) {}
+  }, [savedAiMacro]);
+
+  const saveAiWorkoutPlan = (plan) => {
+    setSavedAiWorkout(plan);
+    showNotification('AI Plan Saved!', 'Your personalized workout routine has been saved to your dashboard.');
+  };
+
+  const clearAiWorkoutPlan = () => {
+    setSavedAiWorkout(null);
+    showNotification('AI Plan Cleared', 'Saved workout plan removed from your dashboard.', 'info');
+  };
+
+  const saveAiMacroPlan = (plan) => {
+    setSavedAiMacro(plan);
+    showNotification('AI Nutrition Saved!', 'Your custom macro target protocol has been saved to your dashboard.');
+  };
+
+  const clearAiMacroPlan = () => {
+    setSavedAiMacro(null);
+    showNotification('AI Nutrition Cleared', 'Saved nutrition protocol removed from your dashboard.', 'info');
+  };
 
   // Sync registered users
   useEffect(() => {
@@ -331,6 +422,14 @@ export const GymProvider = ({ children }) => {
         bookings,
         activePlan,
         toast,
+        theme,
+        toggleTheme,
+        savedAiWorkout,
+        saveAiWorkoutPlan,
+        clearAiWorkoutPlan,
+        savedAiMacro,
+        saveAiMacroPlan,
+        clearAiMacroPlan,
         registerUser,
         loginUser,
         loginDemoUser,

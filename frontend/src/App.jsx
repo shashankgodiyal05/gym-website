@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Toast from './components/Toast';
 import BookingModal from './components/BookingModal';
 import CheckoutModal from './components/CheckoutModal';
+import AiAssistantModal from './components/AiAssistantModal';
 
 import Home from './pages/Home';
 import About from './pages/About';
@@ -13,6 +14,7 @@ import SlotBooking from './pages/SlotBooking';
 import Membership from './pages/Membership';
 import Register from './pages/Register';
 import MyBookings from './pages/MyBookings';
+import AiFitnessLab from './pages/AiFitnessLab';
 
 // Auto scroll to top on navigation
 function ScrollToTop() {
@@ -85,6 +87,15 @@ export default function App() {
                 }
               />
               <Route
+                path="/ai-lab"
+                element={
+                  <AiFitnessLab
+                    onOpenBookingModal={handleOpenBookingModal}
+                    onOpenCheckoutModal={handleOpenCheckoutModal}
+                  />
+                }
+              />
+              <Route
                 path="*"
                 element={
                   <Home
@@ -98,6 +109,12 @@ export default function App() {
 
           <Footer />
           <Toast />
+
+          {/* Floating AI Assistant Chatbot */}
+          <AiAssistantModal
+            onOpenBookingModal={handleOpenBookingModal}
+            onOpenCheckoutModal={handleOpenCheckoutModal}
+          />
 
           {/* Trainer Slot Booking Modal */}
           {selectedTrainerForBooking && (
